@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<body>
+		<img src="dvd-orange.png" id="dvd-image-orange" width="100%" height="100%">
+		<img src="dvd-red.png" id="dvd-image-red" width="100%" height="100%">
+		<img src="dvd-green.png" id="dvd-image-green" width="100%" height="100%">
+		<img src="dvd-black.png" id="dvd-image" width="100%" height="100%">
+		<canvas id="canvas" width="1000" height="500">
+</body>
+<style>
+
+	* > * {
+		box-sizing: border-box;
+	}	
+
+	html, body {
+		width: 50%;
+		padding: 0;
+		margin: 0;
+	}
+
+	body {
+		height: 100%;
+	}
+
+	#canvas {
+		padding: 0;
+		margin: 0;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border: 2px solid black;
+		width: 100%;
+	}
+
+	img {
+		display: none;
+	}
+</style>
+<script>
+	var c = document.getElementById("canvas");
+	var ctx = c.getContext("2d");
+	
+	let dvdImage = document.getElementById("dvd-image");
+	
+	let rectWidth = 50;
+	let rectHeight = 50;
+	
+	let dvdImageStatus = 'blue';
+
+	let rectVelocityX = rectWidth/30;
+	let rectVelocityY = rectWidth/30;
+	let positionX = Math.random() * 500;
+	let positionY = Math.random() * 100;
+
+	class Updater {
+		static move() {
+			clearCanvas();
+			moveRect();
+			drawRect();
+		}
+		static goRight() {
+			rectVelocityX = -rectVelocityX;
+		}
+		static goLeft() {
+			rectVelocityX = -rectVelocityX;
+		}
+		static goUp() {
+			rectVelocityY = -rectVelocityY;
+		}
+		static goDown() {
+			rectVelocityY = -rectVelocityY;
+		}
+		static checkPositionX() {
+			if (positionX > 860 - rectWidth) {
+				Updater.goLeft();
+				changeColor();
+		}
+		
+			else if (positionX < 0 - 10) {
+				this.goRight();
+				changeColor();
+			}
+		}
+		static checkPositionY() {
+			if (positionY > 380 - rectHeight) {
+				this.goUp();
+				changeColor();
+			}
+			else if (positionY < -rectWidth - 10) {
+				this.goDown();
+				changeColor();
+			}
+		}
+	}
+
+	function clearCanvas() {
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, 0, 1000, 500);
+	}
+
+	function moveRect() {
+		
+		Updater.checkPositionX();
+		Updater.checkPositionY();
+
+		positionX = positionX + rectVelocityX;
+		positionY = positionY + rectVelocityY;
+	}
+
+	function drawRect() {
+		ctx.drawImage(dvdImage, positionX, positionY);
+	}
+
+	function changeColor() {
+		if (dvdImageStatus == 'red') {
+			dvdImage = document.getElementById('dvd-image-green');
+			dvdImageStatus = 'green';
+		}
+		else if (dvdImageStatus == 'green') {
+			dvdImage = document.getElementById('dvd-image-orange');
+			dvdImageStatus = 'orange';
+		}
+		else if (dvdImageStatus == 'orange') {
+			dvdImage = document.getElementById('dvd-image');
+			dvdImageStatus = 'blue';
+		}
+		else if (dvdImageStatus == 'blue') {
+			dvdImage = document.getElementById('dvd-image-red');
+			dvdImageStatus = 'red';	
+		}
+	}
+
+	function animate() {
+		setInterval(function() {
+			Updater.move();
+		}, 10);
+	}
+
+	animate();
+
+	//Made by Melvin Wahlgren
+</script>
+<title>DVD</title>
+</head>
+</html>
